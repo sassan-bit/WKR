@@ -8,11 +8,19 @@ echo.
 :: Проверка Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ОШИБКА] Python не найден!
-    echo Скачайте Python 3.10+ с https://python.org и установите.
-    echo Убедитесь что отмечен пункт "Add Python to PATH".
-    pause
-    exit /b 1
+    echo [!] Python не найден. Устанавливаем автоматически...
+    echo.
+    winget install --id Python.Python.3.11 --silent --accept-package-agreements --accept-source-agreements >nul 2>&1
+    if errorlevel 1 (
+        echo [ОШИБКА] Автоустановка не удалась.
+        echo Скачайте Python 3.10+ вручную: https://python.org
+        echo При установке отметьте "Add Python to PATH".
+        pause
+        exit /b 1
+    )
+    echo [OK] Python установлен
+    :: Обновляем PATH в текущей сессии
+    for /f "tokens=*" %%i in ('powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable(\"PATH\",\"Machine\") + \";\" + [Environment]::GetEnvironmentVariable(\"PATH\",\"User\")"') do set "PATH=%%i"
 )
 
 for /f "tokens=2 delims= " %%v in ('python --version 2^>^&1') do set PYVER=%%v
