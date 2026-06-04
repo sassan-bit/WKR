@@ -23,9 +23,7 @@ wheels/
 .installed.cfg
 *.egg
 
-# Модели и данные
-model/*.model
-model/*.json
+# Данные для обучения
 data/
 *.exe
 *.dll
