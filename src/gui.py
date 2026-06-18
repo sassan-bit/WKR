@@ -1232,16 +1232,22 @@ class MainWindow(QMainWindow):
         rp = Path(self.monitor_page.path or "C:\\")
         if not rp.exists():
             QMessageBox.critical(self,"Error",f"Path not found:\n{rp}"); return
-        self.monitoring = True
-        self._save_monitor_pref(str(rp))
-        self.log_file_path.touch(exist_ok=True)
-        self.observer = Observer()
-        self.observer.schedule(MonitorEventHandler(self._bridge), str(rp), recursive=True)
-        self.observer.daemon = True; self.observer.start()
-        self.monitor_page.set_monitoring(True, rp.name)
-        self.dashboard.shield.set_active(True)
-        self.refresh_log()
-        self.monitor_page.append_log(f"Monitoring started: {rp}", "info")
+        try:
+            self.monitoring = True
+            self._save_monitor_pref(str(rp))
+            self.log_file_path.parent.mkdir(parents=True, exist_ok=True)
+            self.log_file_path.touch(exist_ok=True)
+            self.observer = Observer()
+            self.observer.schedule(MonitorEventHandler(self._bridge), str(rp), recursive=True)
+            self.observer.daemon = True; self.observer.start()
+            self.monitor_page.set_monitoring(True, rp.name)
+            self.dashboard.shield.set_active(True)
+            self.refresh_log()
+            self.monitor_page.append_log(f"Monitoring started: {rp}", "info")
+        except Exception as ex:
+            self.monitoring = False
+            self.observer = None
+            QMessageBox.critical(self, "Error", f"Failed to start monitoring:\n{ex}")
 
     def stop_monitoring(self):
         self.monitoring = False
