@@ -8,5 +8,4 @@ watchdog>=3.0.0
 tqdm>=4.62.0
 optuna>=3.0.0
 colorama>=0.4.0
-tkinterdnd2>=0.3.0
 
