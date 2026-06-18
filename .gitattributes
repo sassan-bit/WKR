@@ -1,0 +1,14 @@
+# Text files — auto line endings
+* text=auto
+
+# LightGBM model files — force LF (binary-safe text format)
+*.model text eol=lf
+model/feature_names.json text eol=lf
+model/threshold.json text eol=lf
+
+# True binary files — no conversion
+*.gif binary
+*.png binary
+*.jpg binary
+*.ico binary
+fonts/** binary
